@@ -12,7 +12,7 @@ namespace AeroAssistant
             {
                 Console.WriteLine("AeroAssistant");
                 Console.WriteLine("(c) 2019 The IoTAware Development Team");
-                Console.Write("Enter host IP: ");
+                Console.Write("Enter hostname or IP: ");
                 string ip = Console.ReadLine();
                 Console.Write("Enter host port: ");
                 int port = Int32.Parse(Console.ReadLine());
@@ -42,7 +42,8 @@ namespace AeroAssistant
             Console.WriteLine("**** AeroAssistant Main Menu ****");
             Console.WriteLine("1) Read records");
             Console.WriteLine("2) Write record");
-            Console.WriteLine("3) Exit");
+            Console.WriteLine("3) Delete record");
+            Console.WriteLine("4) Exit");
             Console.Write("Enter selection: ");
             string input = Console.ReadLine();
             switch(input)
@@ -54,6 +55,9 @@ namespace AeroAssistant
                     WriteRecord(client);
                     break;
                 case "3":
+                    DeleteRecord(client);
+                    break;
+                case "4":
                     client.Close();
                     break;
                
@@ -93,13 +97,37 @@ namespace AeroAssistant
 
         }
 
+        public static void DeleteRecord(AerospikeClient client)
+        {
+            try
+            {
+                WritePolicy policy = new WritePolicy();
+                policy.SetTimeout(50);
+                Console.Write("Enter namespace: ");
+                string ns = Console.ReadLine();
+                Console.Write("Enter set name: ");
+                string setName = Console.ReadLine();
+                Console.Write("Enter key: ");
+                string keyName = Console.ReadLine();
+                Key key = new Key(ns, setName, keyName);
+                client.Delete(policy, key);
+                Console.WriteLine("Record deleted");
+                LaunchAssistant(client);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("The following error occured while trying to delete a record: ");
+                Console.WriteLine(e);
+                LaunchAssistant(client);
+            }
+        }
+
         public static void WriteRecord(AerospikeClient client)
         {
             try
             {
                 WritePolicy policy = new WritePolicy();
                 policy.SetTimeout(50);
-
                 Console.Write("Enter namespace: ");
                 string ns = Console.ReadLine();
                 Console.Write("Enter set name: ");
