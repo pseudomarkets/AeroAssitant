@@ -11,7 +11,7 @@ namespace AeroAssistant
             try
             {
                 Console.WriteLine("AeroAssistant");
-                Console.WriteLine("(c) 2019 Shravan Jambukesan");
+                Console.WriteLine("(c) 2019 - 2020 Shravan Jambukesan");
                 Console.Write("Enter hostname or IP: ");
                 string ip = Console.ReadLine();
                 Console.Write("Enter host port: ");

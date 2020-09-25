@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aerospike.Client" Version="3.8.1" />
+    <PackageReference Include="Aerospike.Client" Version="3.9.10" />
   </ItemGroup>
 
 </Project>
