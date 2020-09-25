@@ -126,6 +126,7 @@ namespace AeroAssistant
         {
             try
             {
+                Bin bin = null;
                 WritePolicy policy = new WritePolicy();
                 policy.SetTimeout(50);
                 Console.Write("Enter namespace: ");
@@ -136,11 +137,31 @@ namespace AeroAssistant
                 string keyName = Console.ReadLine();
                 Console.Write("Enter bin name: ");
                 string binName = Console.ReadLine();
+                Console.Write("Enter in data type for value (string, int, double, bool): ");
+                string dataType = Console.ReadLine();
                 Console.Write("Enter value: ");
                 string value = Console.ReadLine();
 
+                switch (dataType)
+                {
+                    case "string":
+                        bin = new Bin(binName, value);
+                        break;
+                    case "int":
+                        bin = new Bin(binName, Int32.Parse(value));
+                        break;
+                    case "double":
+                        bin = new Bin(binName, double.Parse(value));
+                        break;
+                    case "bool":
+                        bin = new Bin(binName, bool.Parse(value));
+                        break;
+                    default:
+                        bin = new Bin(binName, value);
+                        break;
+                }
+
                 Key key = new Key(ns, setName, keyName);
-                Bin bin = new Bin(binName, value);
 
                 client.Put(policy, key, bin);
                 Console.WriteLine("Record written to DB");
