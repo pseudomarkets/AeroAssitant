@@ -4,8 +4,9 @@ using Aerospike.Client;
 
 namespace AeroAssistant
 {
-    class Program
+    public class Program
     {
+        private static AerospikeClient _client;
         static void Main(string[] args)
         {
             try
@@ -16,11 +17,11 @@ namespace AeroAssistant
                 string ip = Console.ReadLine();
                 Console.Write("Enter host port: ");
                 int port = Int32.Parse(Console.ReadLine());
-                AerospikeClient client = new AerospikeClient(ip, port);
-                if (client.Connected)
+                _client = new AerospikeClient(ip, port);
+                if (_client.Connected)
                 {
                     Console.WriteLine("Connected to Aerospike cluster on host: " + ip + ":" + port);
-                    LaunchAssistant(client);
+                    LaunchAssistant();
                 }
                 else
                 {
@@ -37,7 +38,7 @@ namespace AeroAssistant
 
         }
 
-        public static void LaunchAssistant(AerospikeClient client)
+        public static void LaunchAssistant()
         {
             Console.WriteLine("**** AeroAssistant Main Menu ****");
             Console.WriteLine("1) Read records");
@@ -49,22 +50,22 @@ namespace AeroAssistant
             switch(input)
             {
                 case "1":
-                    ReadRecords(client);
+                    ReadRecords();
                     break;
                 case "2":
-                    WriteRecord(client);
+                    WriteRecord();
                     break;
                 case "3":
-                    DeleteRecord(client);
+                    DeleteRecord();
                     break;
                 case "4":
-                    client.Close();
+                    _client.Close();
                     break;
                
             }
         }
 
-        public static void ReadRecords(AerospikeClient client)
+        public static void ReadRecords()
         {
             try
             {
@@ -75,7 +76,7 @@ namespace AeroAssistant
                 Console.Write("Enter key: ");
                 string keyName = Console.ReadLine();
                 Key key = new Key(ns, setName, keyName);
-                Record record = client.Get(null, key);
+                Record record = _client.Get(null, key);
                 Console.WriteLine("Query Result");
                 Console.WriteLine("======================================");
                 if(record != null)
@@ -86,18 +87,18 @@ namespace AeroAssistant
                     }
                 }
                 Console.WriteLine("======================================");
-                LaunchAssistant(client);
+                LaunchAssistant();
             }
             catch (Exception e)
             {
                 Console.WriteLine("The following error occured while trying to read a record: ");
                 Console.WriteLine(e);
-                LaunchAssistant(client);
+                LaunchAssistant();
             }
 
         }
 
-        public static void DeleteRecord(AerospikeClient client)
+        public static void DeleteRecord()
         {
             try
             {
@@ -110,19 +111,19 @@ namespace AeroAssistant
                 Console.Write("Enter key: ");
                 string keyName = Console.ReadLine();
                 Key key = new Key(ns, setName, keyName);
-                client.Delete(policy, key);
+                _client.Delete(policy, key);
                 Console.WriteLine("Record deleted");
-                LaunchAssistant(client);
+                LaunchAssistant();
             }
             catch(Exception e)
             {
                 Console.WriteLine("The following error occured while trying to delete a record: ");
                 Console.WriteLine(e);
-                LaunchAssistant(client);
+                LaunchAssistant();
             }
         }
 
-        public static void WriteRecord(AerospikeClient client)
+        public static void WriteRecord()
         {
             try
             {
@@ -163,15 +164,15 @@ namespace AeroAssistant
 
                 Key key = new Key(ns, setName, keyName);
 
-                client.Put(policy, key, bin);
+                _client.Put(policy, key, bin);
                 Console.WriteLine("Record written to DB");
-                LaunchAssistant(client);
+                LaunchAssistant();
             }
             catch (Exception e)
             {
                 Console.WriteLine("The following error occured while trying to write a record: ");
                 Console.WriteLine(e);
-                LaunchAssistant(client);
+                LaunchAssistant();
             }
 
         }
